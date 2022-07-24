@@ -1,0 +1,334 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Экзамен</title>
+        <style type="text/css">
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: #f3f3f3;
+                overflow: auto;
+            }
+
+            input[type="text"],
+            input[type="number"] {
+                width: 100px;
+                color: rgb(36, 35, 42);
+                font-size: 16px;
+                line-height: 20px;
+                min-height: 28px;
+                border-radius: 4px;
+                padding: 8px 16px;
+                border: 2px solid transparent;
+                box-shadow: rgb(0 0 0 / 12%) 0px 1px 3px,
+                    rgb(0 0 0 / 24%) 0px 1px 2px;
+                background: rgb(251, 251, 251);
+                transition: all 0.1s ease 0s;
+            }
+
+            input[type="text"]:focus,
+            input[type="number"]:focus {
+                border: 2px solid rgb(124, 138, 255);
+            }
+
+            button {
+                display: inline-block;
+                outline: 0;
+                border: 0;
+                cursor: pointer;
+                background: #000000;
+                color: #ffffff;
+                border-radius: 8px;
+                padding: 14px 24px 16px;
+                font-size: 18px;
+                font-weight: 700;
+                line-height: 1;
+                transition: transform 200ms, background 200ms;
+            }
+
+            button:hover {
+                transform: translateY(-2px);
+            }
+
+            .container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                margin: auto;
+                padding: 20px;
+                overflow: auto;
+            }
+
+            .main {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                margin: auto;
+                padding: 40px;
+                align-items: center;
+                border-radius: 8px;
+                box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+                    0px 1px 1px 0px rgb(0 0 0 / 14%),
+                    0px 1px 3px 0px rgb(0 0 0 / 12%);
+                background-color: white;
+            }
+
+            .sections {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                width: 100%;
+                padding-top: 20px;
+            }
+
+            .section {
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                width: 100%;
+                margin: 20px;
+            }
+
+            .section.left .range-container {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .section.left .range-container .from {
+                margin-right: 10px;
+            }
+
+            .section.left .range-container .to {
+                margin-left: 10px;
+            }
+
+            .section.left input {
+                width: 100%;
+            }
+
+            .section.left button {
+                width: 100%;
+            }
+
+            .section.right {
+                display: none;
+            }
+
+            .section.right .take-container {
+                width: 100%;
+            }
+
+            .section.right .tickets-container {
+                display: flex;
+                justify-content: center;
+                align-items: stretch;
+                align-content: center;
+                flex-wrap: wrap;
+                width: 100%;
+                margin-bottom: 15px;
+            }
+
+            .section.right .tickets-container .ticket {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 200px;
+                min-height: 80px;
+                margin: 5px;
+                padding: 5px;
+                text-align: center;
+                color: black;
+                border-radius: 10px;
+                box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+                    0px 1px 1px 0px rgb(0 0 0 / 14%),
+                    0px 1px 3px 0px rgb(0 0 0 / 12%);
+            }
+
+            .section.right .tickets-container .taken {
+                background-color: #000000;
+                color: white;
+            }
+
+            .section.right .take-container input {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .section.right .take-container button {
+                width: 100%;
+            }
+
+            .popup {
+                position: fixed;
+                display: none;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+                font-weight: bold;
+                font-size: 45px;
+                text-align: center;
+                background-color: white;
+                z-index: 1000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="popup">
+            <p></p>
+            <button onclick="Popup.hide()">Закрыть</button>
+        </div>
+        <div class="container">
+            <div class="main">
+                <h1>Экзамен</h1>
+                <div class="sections">
+                    <div class="section left">
+                        <div class="range-container">
+                            <input
+                                class="from"
+                                type="number"
+                                min="1"
+                                max="100"
+                                step="1"
+                            />
+                            <input
+                                class="to"
+                                type="number"
+                                min="1"
+                                max="100"
+                                step="1"
+                            />
+                        </div>
+                        <button onclick="start()">Начать экзамен</button>
+                    </div>
+                    <div class="section right">
+                        <div class="tickets-container"></div>
+                        <div class="take-container">
+                            <input
+                                id="student"
+                                type="text"
+                                placeholder="Студент"
+                            />
+                            <button id="take" onclick="take()">
+                                Взять билет
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let tickets = {};
+            let from = 1;
+            let to = 24;
+
+            window.onload = function () {
+                let fromInput = document.querySelector(".from");
+                let toInput = document.querySelector(".to");
+                fromInput.value = from.toString();
+                toInput.value = to.toString();
+                fromInput.onchange = (e) => {
+                    from = e.target.value;
+                };
+                toInput.onchange = (e) => {
+                    to = e.target.value;
+                };
+            };
+
+            window.onbeforeunload = function () {
+                return "Данные после перезагрузки страницы не сохранятся.";
+            };
+
+            class Popup {
+                static popupDiv = document.querySelector(".popup");
+                static popupParagraph = document.querySelector(".popup p");
+
+                static show(info) {
+                    this.popupDiv.style.display = "flex";
+                    this.popupParagraph.innerText = info;
+                }
+
+                static hide() {
+                    this.popupDiv.style.display = "none";
+                    this.popupParagraph.innerText = "";
+                }
+            }
+
+            function start() {
+                const leftSectionDiv = document.querySelector(".left");
+                const rightSectionDiv = document.querySelector(".right");
+                const ticketsContainerDiv =
+                    document.querySelector(".tickets-container");
+                const studentInput = document.getElementById("student");
+                const takeButton = document.getElementById("take");
+
+                studentInput.addEventListener("keypress", function (e) {
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        takeButton.click();
+                    }
+                });
+
+                leftSectionDiv.style.display = "none";
+                rightSectionDiv.style.display = "flex";
+
+                for (let i = from; i <= to; i++) {
+                    let ticketDiv = document.createElement("div");
+                    ticketDiv.id = "ticket-" + i;
+                    ticketDiv.classList.add("ticket");
+                    ticketDiv.attr;
+                    ticketDiv.innerText = "Билет " + i;
+                    ticketsContainerDiv.appendChild(ticketDiv);
+                    tickets[i] = null;
+                }
+            }
+
+            function getRandomTicketIndex() {
+                const ticketIndexes = Object.keys(
+                    Object.fromEntries(
+                        Object.entries(tickets).filter(([k, v]) => v === null)
+                    )
+                );
+
+                if (ticketIndexes.length === 0) return null;
+
+                return ticketIndexes[
+                    Math.floor(Math.random() * ticketIndexes.length)
+                ];
+            }
+
+            function take() {
+                const ticketIndex = getRandomTicketIndex();
+                if (ticketIndex === null) return;
+
+                const studentInput = document.getElementById("student");
+                if (studentInput.value === "") return;
+
+                const ticketDiv = document.getElementById(
+                    "ticket-" + ticketIndex
+                );
+
+                Popup.show("Билет " + ticketIndex + `\n${studentInput.value}`);
+
+                ticketDiv.innerText += `\n${studentInput.value}`;
+                ticketDiv.classList += " taken";
+                tickets[ticketIndex] = studentInput.value;
+                studentInput.value = "";
+            }
+        </script>
+    </body>
+</html>
